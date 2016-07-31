@@ -33,6 +33,8 @@ type List struct {
 	Block
 	Items       []string
 	Overflow    string
+	ItemFg      []Attribute
+	ItemBg      []Attribute
 	ItemFgColor Attribute
 	ItemBgColor Attribute
 }
@@ -76,7 +78,15 @@ func (l *List) Buffer() Buffer {
 			trimItems = trimItems[:l.innerArea.Dy()]
 		}
 		for i, v := range trimItems {
-			cs := DTrimTxCls(DefaultTxBuilder.Build(v, l.ItemFgColor, l.ItemBgColor), l.innerArea.Dx())
+			fg := l.ItemFgColor
+			bg := l.ItemBgColor
+			if len(l.ItemFg) > i {
+				fg = l.ItemFg[i]
+			}
+			if len(l.ItemBg) > i {
+				bg = l.ItemBg[i]
+			}
+			cs := DTrimTxCls(DefaultTxBuilder.Build(v, fg, bg), l.innerArea.Dx())
 			j := 0
 			for _, vv := range cs {
 				w := vv.Width()
